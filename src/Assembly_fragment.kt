@@ -1,5 +1,35 @@
 import java.io.File
 
+fun toBinary(input: Int):MutableList<Int> {
+    var dec :Int = input
+    var binary:MutableList<Int> = mutableListOf()
+    if(input == 0){
+        binary.addAll(listOf(0,0,0))
+        return binary
+    }
+    else if(input == 1){
+        binary.addAll(listOf(0,0,1))
+        return binary
+    }
+    else{
+        while (dec >= 1){
+            binary.add(dec%2)
+            dec = dec/2
+        }
+
+//        binary.add(1)
+        if(binary.size == 2){
+            binary.add(0)
+            binary.reverse()
+            return binary
+        }
+        else{
+            binary.reverse()
+            return binary
+        }
+    }
+}
+
 
 fun main() {
     File("src/assembly.txt").forEachLine {
@@ -19,11 +49,11 @@ fun main() {
         )
 //      push opcode to line of binary
         if(opcodeMap.containsKey(instructionModel.instruction)){
-//            println(instructionModel.instruction)
-//            println(opcodeMap.getValue(instructionModel.instruction))
             binary.addAll(opcodeMap.getValue(instructionModel.instruction))
+            binary.addAll(toBinary(instructionModel.field0.toInt()))
             println(binary)
 
         }
+
     }
 }

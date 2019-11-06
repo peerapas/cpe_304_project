@@ -1,11 +1,11 @@
 //class instructionModel(instruction:String?, field0:String?, field1:String?, field2:String?) {
 class instructionModel {
 
-    var label :String? = null
-    var instruction :String? = null
-    var field0 :String? = null
-    var field1 :String? = null
-    var field2 :String? = null
+    var label :String = ""
+    var instruction :String = ""
+    var field0 :String = ""
+    var field1 :String = ""
+    var field2 :String = ""
 
     constructor(instructionLine: List<String>){
         if(instructionLine.size == 5)
