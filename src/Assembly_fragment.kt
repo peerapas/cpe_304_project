@@ -3,12 +3,27 @@ import java.io.File
 
 fun main() {
     File("src/assembly.txt").forEachLine {
-        var instructionLine = it.split(" ")
+        var binary = mutableListOf<Int>(0,0,0,0,0,0,0)
+        var hex = mutableListOf<Int>(0)
+        var instructionLine = it.split(" " )
         var instructionModel = instructionModel(instructionLine)
-//        println(instructionModel.instruction)
-        val opcodeMap = mapOf<String?, String?>("add" to "000", "nand" to "001", "lw" to "010", "sw" to "011","beq" to "100", "jalr" to "101", "halt" to "110", "noop" to "111")
+        val opcodeMap = mapOf<String?,List<Int>>(
+            "add" to listOf<Int>(0,0,0),
+            "nand" to listOf<Int>(0,0,1),
+            "lw" to listOf<Int>(0,1,0),
+            "sw" to listOf<Int>(0,1,1),
+            "beq" to listOf<Int>(1,0,0),
+            "jalr" to listOf<Int>(1,0,1),
+            "halt" to listOf<Int>(1,1,0),
+            "noop" to listOf<Int>(1,1,1)
+        )
+//      push opcode to line of binary
         if(opcodeMap.containsKey(instructionModel.instruction)){
-            println(opcodeMap.getValue(instructionModel.instruction))
+//            println(instructionModel.instruction)
+//            println(opcodeMap.getValue(instructionModel.instruction))
+            binary.addAll(opcodeMap.getValue(instructionModel.instruction))
+            println(binary)
+
         }
     }
 }
