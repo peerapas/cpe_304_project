@@ -1,5 +1,6 @@
 import java.io.File
-import kotlin.test.fail
+import javax.tools.FileObject
+import kotlin.math.*
 
 
 val opcodeMap = mapOf<String?,List<Int>>(
@@ -117,50 +118,87 @@ fun toBinary(input: Int):MutableList<Int> {
     }
 }
 
+fun toDecimal(inputBinary: MutableList<Int>) :Int{
+    var outputDec :Double = 0.0
+    inputBinary.reverse()
+    inputBinary.forEachIndexed { index, i ->
+        if(i == 1)
+        {
+            outputDec += 2.toDouble().pow(index)
+        }
+    }
+    return outputDec.toInt()
+}
 
+fun toHexa(inputDec: Int ) : MutableList<String>{
+    var dec = inputDec
+    val hex = mutableListOf<String>()
+    var mod = 0
+    do{
+        mod = dec % 16
+        when(mod){
+            10 -> hex.add("A")
+            11 -> hex.add("B")
+            12 -> hex.add("C")
+            13 -> hex.add("D")
+            14 -> hex.add("E")
+            15 -> hex.add("F")
+            else -> {
+                hex.add(mod.toString())
+            }
+        }
+        dec /= 16
+    }while (dec > 0)
+    hex.reverse()
+    return hex
+}
 fun main(){
+    val filename = "src/simulator.txt"
+    File(filename).createNewFile()
+    val simulator = File(filename)
     val instructionCollection:MutableList<instructionModel> = mutableListOf()
     File("src/assembly.txt").forEachLine {
-
-        var hex = mutableListOf<Int>(0)
         var instructionLine = it.split(" " )
         var instructionModel = instructionModel(instructionLine)
         instructionCollection.add(instructionModel)
-//        println(instructionModel.instruction)
-//      push opcode to line of binary
     }
-    for(instruction in instructionCollection){
+    instructionCollection.forEachIndexed { index, instruction ->
+
+        print("(address $index): ")
         if(instruction.type == "R")
         {
-            println(convertRtype(instruction))
+            print(toDecimal(convertRtype(instruction)))
+            print(" (hex 0x")
+            toHexa(toDecimal(convertRtype(instruction))).forEach { print(it) }
+            println(")")
         }
         else if(instruction.type == "I")
         {
-            println(convertItype(instruction, instructionCollection))
+            print(toDecimal(convertItype(instruction, instructionCollection)))
+            print(" (hex 0x")
+            toHexa(toDecimal(convertItype(instruction, instructionCollection))).forEach { print(it) }
+            println(")")
         }
         else if(instruction.type == "J")
         {
-            println(convertJtype(instruction))
+            print(toDecimal(convertJtype(instruction)))
+            print(" (hex 0x")
+            toHexa(toDecimal(convertJtype(instruction))).forEach { print(it) }
+            println(")")
         }
         else if(instruction.type == "O")
         {
-            println(convertOtype(instruction))
+            print(toDecimal(convertOtype(instruction)))
+            print(" (hex 0x")
+            toHexa(toDecimal(convertOtype(instruction))).forEach { print(it) }
+            println(")")
         }
         else if(instruction.type == ".fill")
         {
-            println(convertFillType(instruction, instructionCollection))
+            print(convertFillType(instruction, instructionCollection))
+            print(" (hex 0x")
+            print(convertFillType(instruction, instructionCollection).toString().format("%02X"))
+            println(")")
         }
     }
-
-//    for(i in instructionCollection){
-//        if(i.field2.toIntOrNull() == null && i.field2 != "") {
-////            println(i.field2)
-//            for(j in instructionCollection){
-//                if(i.field2 == j.label)
-//                {
-//                    println(instructionCollection.indexOf(j))
-//                }
-//            }
-//        }
-//    }
 }
