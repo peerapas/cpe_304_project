@@ -1,4 +1,6 @@
-//class instructionModel(instruction:String?, field0:String?, field1:String?, field2:String?) {
+package Assembler
+
+//class Assembler.instructionModel(instruction:String?, field0:String?, field1:String?, field2:String?) {
 class instructionModel {
 
     var label :String = ""

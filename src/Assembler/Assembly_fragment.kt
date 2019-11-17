@@ -1,5 +1,6 @@
+package Assembler
+
 import java.io.File
-import javax.tools.FileObject
 import kotlin.math.*
 
 
@@ -14,7 +15,7 @@ val opcodeMap = mapOf<String?,List<Int>>(
     "noop" to listOf<Int>(1,1,1)
 )
 
-fun convertRtype(inputInstruction:instructionModel):MutableList<Int>{
+fun convertRtype(inputInstruction: instructionModel):MutableList<Int>{
     val outputBinary :MutableList<Int> = mutableListOf<Int>(0,0,0,0,0,0,0)
     if(opcodeMap.containsKey(inputInstruction.instruction)){
         outputBinary.addAll(opcodeMap.getValue(inputInstruction.instruction))
@@ -157,7 +158,7 @@ fun main(){
     File(filename).createNewFile()
     val simulator = File(filename)
     val instructionCollection:MutableList<instructionModel> = mutableListOf()
-    File("src/assembly.txt").forEachLine {
+    File("src/Assembler/assembly.txt").forEachLine {
         var instructionLine = it.split(" " )
         var instructionModel = instructionModel(instructionLine)
         instructionCollection.add(instructionModel)
