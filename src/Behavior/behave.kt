@@ -3,6 +3,35 @@ import java.io.File
 fun readFileAsLinesUsingUseLines(fileName: String): List<String>
         = File(fileName).useLines { it.toList() }
 
+fun toBinary(input: Int):MutableList<Int> {
+    var dec :Int = input
+    var binary:MutableList<Int> = mutableListOf()
+    if(input == 0){
+        binary.addAll(listOf(0,0,0))
+        return binary
+    }
+    else if(input == 1){
+        binary.addAll(listOf(0,0,1))
+        return binary
+    }
+    else{
+        while (dec >= 1){
+            binary.add(dec%2)
+            dec = dec/2
+        }
+
+        if(binary.size == 2){
+            binary.add(0)
+            binary.reverse()
+            return binary
+        }
+        else{
+            binary.reverse()
+            return binary
+        }
+    }
+}
+
 fun nand(num1: MutableList<Int>,num2: MutableList<Int>): MutableList<Int> {
     var temp=0
     val listOfres = mutableListOf<Int>()
@@ -76,7 +105,6 @@ fun main() {
     var inst = 0
 
 
-    //var fileObject = File(fileS)
     var text = readFileAsLinesUsingUseLines(fileS)
 
     var i = 2
@@ -86,8 +114,6 @@ fun main() {
         mem.add(data[i].toLong())
     }
     var findOp = mutableListOf<Int>()
-   // var currentline = mutableListOf<Long>()
-    //var Run = true
     println("@@@")
     println("state:")
     println("pc: $pc")
@@ -102,21 +128,12 @@ fun main() {
     pc+=1
     var Run = true
     while (Run) {
-        //currentline.add(mem[pc])
-        //println(mem[pc])
-        //println(currentline)
-        //var pl = pc+1
         println("@@@")
         println("state:")
         println("pc: $pc")
         println("memory:")
         println(mem)
         findOp = toBinary(mem[pc-1].toInt())
-        //findOp = toBinary(currentline[pc].toInt())
-//        println(currentline[pc])
-//        println(currentline[pc].toInt())
-//        println(pc)
-//        println(findOp)
         println("current addr: " +mem[pc])
         if (findOp.size > 3) {
             while (findOp.size < 32) {
@@ -133,21 +150,9 @@ fun main() {
                 var des =
                     convertBinaryToDecimal((findOp[29].toString() + findOp[30].toString() + findOp[31].toString()).toLong())
                 reg[des] = reg[rs] + reg[rt]
-                //println(reg[des])
                 pc += 1
             }
-            //        else if (op == "001") { //R type
-            //            var des = convertBinaryToDecimal((findOp[29].toString()+findOp[30].toString()+findOp[31].toString()).toLong())
-            //
-            //            //println("rs1: $rs1 rs2: $rs2 des: $des")
-            //            var temp = mutableListOf<Int>()
-            //            //println("regrs1: " + toBinary(reg[rs])+  " regrs2: "+ toBinary(reg[rs2]) )
-            //            temp = nand(toBinary(reg[rs]), toBinary(reg[rt]))
-            //            fileOb.writeText(temp.toString())
-            //            var result = fileOb.readText()
-            //            //println("binary result: $result and pc: $pc")
-            //            pc += 1
-            //        }
+
             else if (op == "010") { //I type -load
                 var off = convertBinaryToDecimal(
                     (findOp[16].toString() + findOp[17].toString() + findOp[18].toString() + findOp[19].toString() +
@@ -155,11 +160,7 @@ fun main() {
                             findOp[24].toString() + findOp[25].toString() + findOp[26].toString() + findOp[27].toString() +
                             findOp[28].toString() + findOp[29].toString() + findOp[30].toString() + findOp[31].toString()).toLong()
                 )
-                println("rs: $rs rt: $rt off: $off")
                 reg[rt] = mem[reg[rs].toInt() + off]
-//                println(rt)
-//                println(reg[rt])
-//                println(reg[rs])
                 pc += 1
 
             }
@@ -177,26 +178,18 @@ fun main() {
                         findOp[20].toString()+findOp[21].toString()+ findOp[22].toString()+findOp[23].toString()+
                         findOp[24].toString()+findOp[25].toString()+findOp[26].toString()+findOp[27].toString()+
                         findOp[28].toString()+findOp[29].toString()+findOp[30].toString()+findOp[31].toString()).toLong())
-                println("rs: $rs rt: $rt off: $off")
-//                println(reg[rs])
-//                println(reg[rt])
-//                println(off)
-//                println (pc)
+
                 if(reg[rs]==reg[rt]){
                     if (findOp[16]==1){
-                        //println(convert2complement(off.toLong()))
                         pc+=convert2complement(off.toLong())-1
                     }
                     else{
                         pc+=1+off
                     }
 
-                    //println(pc)
-                    //pc=2
                 }else{
                     pc+=1
                 }
-                //println(pc)
             }
             else if (op == "101"){ //J type
                 reg[rt] = (pc+1).toLong()
